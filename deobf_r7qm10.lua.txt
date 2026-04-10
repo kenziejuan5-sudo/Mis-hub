@@ -1,0 +1,290 @@
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local VirtualUser = game:GetService("VirtualUser")
+local Players = game:GetService("Players")
+game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local Remotes = ReplicatedStorage:WaitForChild("JJKRemotes", 9000000000)
+local GameData = {CTs = {"Cursed Reinforcement", "Shockwave Fist", "Chain Binding", "Paper Talismans", "Smoke Veil", "Stone Skin", "Sludge Manipulation", "Sugar", "Helicopter Hair", "Airplane Hair", "Hair Binding", "Wind Scythe", "Nail Gun", "Straw Doll", "Blood Manipulation", "Contractual Re-Creation", "Boogie Woogie", "Ratio Technique", "Love Rendezvous", "Moon Dregs", "Cockroach", "Limitless", "Shrine", "Copy", "Private Pure Love Train", "Mythical Beast Amber", "Disaster Plants", "Projection Sorcery", "Technique Extinguishment", "Judgeman", "Sky Manipulation", "Cursed Energy Discharge", "Anti-Gravity System", "Ten Shadows", "Star Rage", "Idle Transfiguration", "Comedian", "Cursed Spirit Manipulation", "Eight-Handed Sword Divergent Sila Divine General Mahoraga", "Yes King", "John Kaisen"}, Traits = {"Low CE Reserves", "Clumsy", "Average Output", "Sturdy", "Acrobatic", "High CE Pool", "Black Flash Spark", "Binding Vow: Overtime", "Immense CE", "CE Trait: Electricity", "Restless Gambler", "Explosive Output", "24 FPS Concept", "Sky Manipulator", "Six Eyes", "Perfect Body", "Ryomen's Vessel", "Physically Gifted", "Spiritually Gifted", "Queen of Curses", "Divine General's Vessel", "Heian Era Vessel", "Black Flash Masterclass", "Over and Over Again!", "Unstoppable Force"}, Styles = {"Brawler", "Kempo", "Weapon Master", "Sword Draw (Iai)", "Martial Arts", "Shadow Style", "Taido Martial Arts", "Assassin", "Jujutsu Sorcerer", "Heavenly Tyrant"}, Clans = {"Inumaki", "Fushiguro", "Todo", "Kugisaki", "Nanami", "Zenin", "Gojo", "Kamo", "Kinji", "Tsukumo", "Itadori", "Miwa", "Ryomen", "Ieiri", "Okkotsu", "Iori", "Hiromi", "Ishigori"}, Bosses = {"Yuta Okkotsu", "Ryu Ishigori", "Mahoraga", "Kenjaku", "Toji Fushiguro", "Ryomen Sukuna", "Satoru Gojo", "Kinji Hakari", "Hajime Kashimo", "Takako Uro", "Curse Naoya", "Hiromi Higuruma", "Heian Era Sukuna", "Yuki Tsukumo", "Shinjuku Yuji", "John Kaisen"}, Rarities = {"Common", "Rare", "Epic", "Legendary", "Cursed"}}
+local ManualBook = {Common = {"Cursed Reinforcement", "Shockwave Fist", "Chain Binding", "Paper Talismans", "Smoke Veil", "Stone Skin", "Sludge Manipulation", "Sugar", "Helicopter Hair", "Airplane Hair", "Low CE Reserves", "Clumsy", "Average Output", "Brawler", "Kempo"}, Rare = {"Hair Binding", "Wind Scythe", "Nail Gun", "Sturdy", "Acrobatic", "Weapon Master", "Sword Draw (Iai)"}, Epic = {"Straw Doll", "Blood Manipulation", "Contractual Re-Creation", "Boogie Woogie", "Ratio Technique", "Love Rendezvous", "Moon Dregs", "Cockroach", "High CE Pool", "Black Flash Spark", "Binding Vow: Overtime", "Martial Arts", "Shadow Style"}, Legendary = {"Limitless", "Shrine", "Copy", "Private Pure Love Train", "Mythical Beast Amber", "Disaster Plants", "Projection Sorcery", "Technique Extinguishment", "Judgeman", "Sky Manipulation", "Cursed Energy Discharge", "Anti-Gravity System", "Immense CE", "CE Trait: Electricity", "Restless Gambler", "Explosive Output", "24 FPS Concept", "Sky Manipulator", "Taido Martial Arts", "Assassin"}, Cursed = {"Ten Shadows", "Star Rage", "Idle Transfiguration", "Comedian", "Cursed Spirit Manipulation", "Eight-Handed Sword Divergent Sila Divine General Mahoraga", "Six Eyes", "Perfect Body", "Ryomen's Vessel", "Physically Gifted", "Spiritually Gifted", "Queen of Curses", "Divine General's Vessel", "Jujutsu Sorcerer", "Heavenly Tyrant", "Heian Era Vessel", "Yes King", "John Kaisen", "Black Flash Masterclass", "Over and Over Again!", "Unstoppable Force"}}
+local Toggles = {CT = false, SecondCT = false, Trait = false, Style = false, Clan = false, Companion = false, CompanionSpeed = 0.6, CompanionFarm = false, CompanionFarmSpeed = 1, Farm = false, Grade = false, Prestige = false, Reinc = false, ClearUI = false, InfRaid = false, InfRaidSpeed = 0.5}
+local Selected = {CT = {Names = {}, Rarities = {}}, SecondCT = {Names = {}, Rarities = {}}, Trait = {Names = {}, Rarities = {}}, Style = {Names = {}, Rarities = {}}, Companion = {Names = {}, Rarities = {}}, Clan = {Names = {}}}
+local SelectedBoss = "Yuki Tsukumo"
+local function SaveConfig()
+    writefile("m4xifl3x_hub_config.json", HttpService:JSONEncode(Toggles))
+end
+local function LoadConfig()
+    if isfile("m4xifl3x_hub_config.json") then
+        local success, data = pcall(function()
+    return HttpService:JSONDecode(readfile("m4xifl3x_hub_config.json"))
+end)
+        if success then
+            for i, v in pairs(data) do
+                if Toggles[i] ~= (nil) then
+                    Toggles[i] = v
+                end
+            end
+        end
+    end
+end
+LoadConfig()
+local function setGPValue(name, value)
+    local pd = Players.LocalPlayer:FindFirstChild("JJKData") or Players.LocalPlayer:FindFirstChild("PlayerData")
+    local v = pd:FindFirstChild(name)
+    if v then
+        v.Value = value
+    end
+end
+local Window = Rayfield:CreateWindow({Name = "m4xifl3x Hub | JJK Incremental", LoadingTitle = "No Linkvertise shit.", Theme = "DarkBlue"})
+local RollTab = Window:CreateTab("Auto Roll", "refresh-cw")
+local FarmTab = Window:CreateTab("Auto Farm", "sword")
+local GPTab = Window:CreateTab("Gamepasses", "gem")
+local MiscTab = Window:CreateTab("Misc", "list")
+local function CreateAutoRoll(title, category, remote, dataName, optionsKey)
+    RollTab:CreateSection(title)
+    RollTab:CreateDropdown({Name = "Target Names", Options = GameData[optionsKey], CurrentOption = {}, MultipleOptions = true, Callback = function(v)
+    Selected[category].Names = v
+end})
+    RollTab:CreateDropdown({Name = "Target Rarities", Options = GameData.Rarities, CurrentOption = {}, MultipleOptions = true, Callback = function(v)
+    Selected[category].Rarities = v
+end})
+    RollTab:CreateToggle({Name = ("Start ") .. title, CurrentValue = Toggles[category], Callback = function(v)
+    Toggles[category] = v
+    SaveConfig()
+    if v then
+        task.spawn(function()
+    local dataFolder = Players.LocalPlayer:FindFirstChild("JJKData") or Players.LocalPlayer:FindFirstChild("PlayerData")
+    while Toggles[category] do
+        local currentVal = dataFolder:WaitForChild(dataName).Value
+        local stop = table.find(Selected[category].Names, dataFolder:WaitForChild(dataName).Value)
+        if not stop then
+            for _, r in pairs(Selected[category].Rarities) do
+                if table.find(ManualBook[r], currentVal) then
+                    stop = true
+                    break
+                end
+            end
+        end
+        if stop then
+            Rayfield:Notify({Title = "DONE", Content = currentVal})
+            Toggles[category] = false
+            SaveConfig()
+            break
+        end
+        Remotes[remote]:FireServer()
+        task.wait(0.6)
+    end
+end)
+    end
+end})
+end
+CreateAutoRoll("First Technique", "CT", "RerollCT", "CursedTechnique", "CTs")
+CreateAutoRoll("Second Technique", "SecondCT", "RerollSecondCT", "SecondCursedTechnique", "CTs")
+CreateAutoRoll("Traits", "Trait", "RerollTrait", "Trait", "Traits")
+CreateAutoRoll("Styles", "Style", "RerollStyle", "FightingStyle", "Styles")
+RollTab:CreateSection("Clans")
+RollTab:CreateDropdown({Name = "Target Clans", Options = GameData.Clans, CurrentOption = {}, MultipleOptions = true, Callback = function(v)
+    Selected.Clan.Names = v
+end})
+RollTab:CreateToggle({Name = "Start Clans", CurrentValue = false, Callback = function(v)
+    Toggles.Clan = v
+    SaveConfig()
+    if v then
+        task.spawn(function()
+    local df = Players.LocalPlayer:FindFirstChild("JJKData") or Players.LocalPlayer:FindFirstChild("PlayerData")
+    while Toggles.Clan do
+        local cur = df:WaitForChild("Clan").Value
+        if table.find(Selected.Clan.Names, df:WaitForChild("Clan").Value) then
+            Rayfield:Notify({Title = "DONE", Content = df:WaitForChild("Clan").Value})
+            Toggles.Clan = false
+            SaveConfig()
+            break
+        end
+        Remotes.RerollClan:FireServer()
+        task.wait(0.6)
+    end
+end)
+    end
+end})
+RollTab:CreateSection("Companions")
+RollTab:CreateSlider({Name = "Companion Roll Speed", Range = {0.1, 2}, Increment = 0.1, Suffix = "s", CurrentValue = 0.6, Callback = function(v)
+    Toggles.CompanionSpeed = v
+    SaveConfig()
+end})
+RollTab:CreateToggle({Name = "Start Companion Roll", CurrentValue = false, Callback = function(v)
+    Toggles.Companion = v
+    SaveConfig()
+    if v then
+        task.spawn(function()
+    while Toggles.Companion do
+        pcall(function()
+    Remotes.RerollCompanion:FireServer()
+end)
+        task.wait(Toggles.CompanionSpeed or (0.6))
+    end
+end)
+    end
+end})
+FarmTab:CreateSection("Auto Farm")
+FarmTab:CreateDropdown({Name = "Select Boss", Options = GameData.Bosses, CurrentOption = SelectedBoss, MultipleOptions = false, Callback = function(v)
+    SelectedBoss = ((type(v) == ("table")) and v[1]) or v
+end})
+FarmTab:CreateToggle({Name = "Auto Farm Boss", CurrentValue = false, Callback = function(v)
+    Toggles.Farm = v
+    SaveConfig()
+end})
+FarmTab:CreateToggle({Name = "Auto Grade Up", CurrentValue = false, Callback = function(v)
+    Toggles.Grade = v
+    SaveConfig()
+end})
+FarmTab:CreateToggle({Name = "Auto Prestige", CurrentValue = false, Callback = function(v)
+    Toggles.Prestige = v
+    SaveConfig()
+end})
+FarmTab:CreateToggle({Name = "Auto Reincarnate", CurrentValue = false, Callback = function(v)
+    Toggles.Reinc = v
+    SaveConfig()
+end})
+FarmTab:CreateSection("Utilities")
+FarmTab:CreateToggle({Name = "Clear Raid UI (Destroy)", CurrentValue = false, Callback = function(v)
+    Toggles.ClearUI = v
+    SaveConfig()
+    if v then
+        pcall(function()
+    local ui = Players.LocalPlayer.PlayerGui:FindFirstChild("JJKIncrementalUI")
+    if ui then
+        for _, label in pairs(ui:GetDescendants()) do
+            if label:IsA("TextLabel") and label.Text:find("CURSE EXORCISED") then
+                local root = label
+                while root and (root.Parent ~= ui) do
+                    root = root.Parent
+                end
+                if root and root:IsA("Frame") then
+                    root:Destroy()
+                end
+            end
+        end
+    end
+end)
+    end
+end})
+FarmTab:CreateSection("Infinite Raid")
+FarmTab:CreateButton({Name = "Start Infinite Raid (Prestige Scaling)", Callback = function()
+    pcall(function()
+    Remotes.TogglePrestigeScaling:FireServer()
+    task.wait(0.1)
+    Remotes.StartRaid:FireServer("__INFINITE__")
+    Rayfield:Notify({Title = "Infinite Raid", Content = "Raid Started", Duration = 2})
+end)
+end})
+FarmTab:CreateButton({Name = "Finish Raid (Die)", Callback = function()
+    pcall(function()
+    Remotes.InfiniteRaidAction:FireServer("Died")
+    Rayfield:Notify({Title = "Infinite Raid", Content = "Ending Raid...", Duration = 2})
+end)
+end})
+FarmTab:CreateToggle({Name = "Auto Infinite Raid", CurrentValue = false, Callback = function(v)
+    Toggles.InfRaid = v
+    SaveConfig()
+end})
+FarmTab:CreateSlider({Name = "Infinite Raid Speed", Range = {0.1, 2}, Increment = 0.1, Suffix = "s", CurrentValue = 0.5, Callback = function(v)
+    Toggles.InfRaidSpeed = v
+    SaveConfig()
+end})
+task.spawn(function()
+    while task.wait(0.7) do
+        if false then
+            pcall(function()
+    Remotes.ResolveCombat:InvokeServer("Raid Boss", SelectedBoss)
+end)
+        end
+        if Toggles.Grade then
+            pcall(function()
+    Remotes.GradeUp:FireServer()
+end)
+        end
+        if Toggles.Prestige then
+            pcall(function()
+    Remotes.Prestige:FireServer()
+end)
+        end
+        if Toggles.Reinc then
+            pcall(function()
+    Remotes.Reincarnate:FireServer(true)
+end)
+        end
+    end
+end)
+task.spawn(function()
+    while true do
+        if false then
+            pcall(function()
+    Remotes.InfiniteRaidAction:FireServer("WaveComplete")
+end)
+            task.wait(0.5)
+        else
+            task.wait(1)
+        end
+    end
+end)
+GPTab:CreateSection("Gamepass Unlocker")
+GPTab:CreateButton({Name = "Unlock Instant Roll", Callback = function()
+    setGPValue("OwnsInstantRoll", true)
+    Rayfield:Notify({Title = "Success", Content = "Unlocked"})
+end})
+GPTab:CreateButton({Name = "Unlock CT Bag", Callback = function()
+    setGPValue("OwnsCTBag", true)
+    Rayfield:Notify({Title = "Success", Content = "Unlocked"})
+end})
+GPTab:CreateSection("Gamepass Unlocker (I'm not sure if they work :/)")
+GPTab:CreateButton({Name = "Unlock 2x Luck", Callback = function()
+    setGPValue("OwnsLuck2x", true)
+    Rayfield:Notify({Title = "Success", Content = "2x Luck Unlocked"})
+end})
+GPTab:CreateButton({Name = "Unlock 2x Drop Rate", Callback = function()
+    setGPValue("OwnsDropRate2x", true)
+    Rayfield:Notify({Title = "Success", Content = "2x Drop Rate Unlocked"})
+end})
+GPTab:CreateButton({Name = "Unlock Auto Search", Callback = function()
+    setGPValue("OwnsAutoSearch", true)
+    Rayfield:Notify({Title = "Success", Content = "Auto Search Unlocked"})
+end})
+GPTab:CreateButton({Name = "Unlock 2x Yen", Callback = function()
+    setGPValue("OwnsYen2x", true)
+    Rayfield:Notify({Title = "Success", Content = "2x Yen Unlocked"})
+end})
+MiscTab:CreateSection("Culling Games")
+MiscTab:CreateButton({Name = "Add Culling Games Point", Callback = function()
+    Remotes.CullingGamesPvEStart:FireServer("CURSE_HUNT")
+end})
+MiscTab:CreateSection("Equipped Companion Level Farm")
+MiscTab:CreateSlider({Name = "Level Farm Speed", Range = {0.1, 2}, Increment = 0.1, Suffix = "s", CurrentValue = 1, Callback = function(v)
+    Toggles.CompanionFarmSpeed = v
+    SaveConfig()
+end})
+MiscTab:CreateToggle({Name = "Level Farm", CurrentValue = false, Callback = function(v)
+    Toggles.CompanionFarm = v
+    SaveConfig()
+    if v then
+        task.spawn(function()
+    local dataFolder = Players.LocalPlayer:FindFirstChild("JJKData") or Players.LocalPlayer:FindFirstChild("PlayerData")
+    local compObj = dataFolder:WaitForChild("EquippedCompanion")
+    while Toggles.CompanionFarm do
+        local currentComp = compObj.Value
+        if (compObj.Value ~= ("")) and (compObj.Value ~= ("None")) then
+            pcall(function()
+    Remotes.InteractCompanion:FireServer(compObj.Value, "Flirt")
+end)
+        end
+        task.wait(Toggles.CompanionFarmSpeed or (1))
+    end
+end)
+    end
+end})
+if Players.LocalPlayer then
+    Players.LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+end
+Rayfield:Notify({Title = "m4xifl3x Hub Loaded", Content = "Please like script if you enjoyed it", Image = "heart"})
